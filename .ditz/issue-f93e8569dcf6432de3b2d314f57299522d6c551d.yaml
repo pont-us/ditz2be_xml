@@ -1,0 +1,26 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Wrong date numbers in the previous month
+desc: |-
+  Date numbers of the remainder of the previous month start with 31
+  and then go all the way to for example 35.
+type: :bugfix
+component: maceska
+release: 
+reporter: Matej Cepl <mcepl@redhat.com>
+status: :closed
+disposition: :fixed
+creation_time: 2011-07-14 22:26:51.114637 Z
+references: []
+
+id: f93e8569dcf6432de3b2d314f57299522d6c551d
+log_events: 
+- - 2011-07-14 22:26:52.805506 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - created
+  - ""
+- - 2011-07-14 23:36:37.798544 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - closed with disposition fixed
+  - |-
+    Calculation of prevmonthdaystart is slightly more complicated than in
+    the original article.

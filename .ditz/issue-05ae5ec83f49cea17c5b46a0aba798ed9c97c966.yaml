@@ -1,0 +1,34 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Use history API to avoid broken URLs
+desc: |-
+  Just to dump URLs for this:
+  https://github.com/blog/760-the-tree-slider
+  http://stackoverflow.com/tags/history/new
+  http://www.whatwg.org/specs/web-apps/current-work/multipage/history.html#dom-history-pushstate
+  http://code.google.com/web/ajaxcrawling/docs/getting-started.html (that's a bad solution)
+  http://www.tbray.org/ongoing/When/201x/2011/02/09/Hash-Blecch (nice discussion in comments)
+  also
+  http://bti360.com/pages/page.asp?page_id=91491&articleId=21125
+  http://mtrpcic.net/2011/02/fragment-uris-theyre-not-as-bad-as-you-think-really/
+  http://dannythorpe.com/2011/02/09/side-effects-of-hash-bang-urls/
+  http://isolani.co.uk/blog/javascript/BreakingTheWebWithHashBangs (canonical criticism of Gawker's URLs)
+  http://www.jenitennison.com/blog/node/154
+  and of course the most important (although light on tutorial) is
+  https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history
+  also
+  http://diveintohtml5.org/history.html
+type: :task
+component: maceska
+release: 
+reporter: Matej Cepl <mcepl@redhat.com>
+status: :unstarted
+disposition: 
+creation_time: 2011-07-15 18:05:46.801099 Z
+references: []
+
+id: 05ae5ec83f49cea17c5b46a0aba798ed9c97c966
+log_events: 
+- - 2011-07-15 18:05:47.948139 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - created
+  - ""

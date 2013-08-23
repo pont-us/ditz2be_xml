@@ -1,0 +1,23 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: All <a> elements have id='currentDat'
+desc: which is wrong
+type: :bugfix
+component: maceska
+release: 
+reporter: Matej Cepl <mcepl@redhat.com>
+status: :closed
+disposition: :fixed
+creation_time: 2011-08-26 19:41:48.182692 Z
+references: []
+
+id: 133d4759f7ba2dadca47417b1905218517b3f3b3
+log_events: 
+- - 2011-08-26 19:41:50.697994 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - created
+  - ""
+- - 2011-08-26 22:40:51.759791 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - closed with disposition fixed
+  - just remove that id
+trac_id: 

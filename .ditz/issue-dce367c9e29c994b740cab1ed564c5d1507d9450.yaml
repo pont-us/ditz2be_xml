@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Hard coded size of screen (and anyway, table is bigger than my screen).
+desc: ""
+type: :bugfix
+component: maceska
+release: 
+reporter: Matej Cepl <mcepl@redhat.com>
+status: :unstarted
+disposition: 
+creation_time: 2011-07-14 23:48:57.102473 Z
+references: []
+
+id: dce367c9e29c994b740cab1ed564c5d1507d9450
+log_events: 
+- - 2011-07-14 23:48:57.706422 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - created
+  - ""

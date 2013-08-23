@@ -1,0 +1,46 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Review renderCalendar function
+desc: "On generating tables see\n\
+  http://www.demosthenes.info/blog/357/Generating-An-HTML5-Calendar-With-PHP\n      \n\
+  mktime converts a given date to standard Unix time. (As we don\xE2\x80\x99t\n\
+  need information on a specific day, we use the 1st of the month\n\
+  as an arbitrary starting point). Given that, we can determine the\n\
+  number of days in the chosen month, and when the 1st of the month\n\
+  falls (w as a keyword in the date() function provides an offset\n\
+  for the 1st day in the month: if the 1st falls on a Sunday, the\n\
+  result will be 0, Monday will be 1, Saturday 6, etc.)\n\n\
+  $nextday starts the count for the days after the current month;\n\
+  $next generates the Unix time for the following month.\n\n\
+  If the chosen month does not start on a Sunday,\n\
+  $prevmonthdaystart determines the appropriate date from the\n\
+  previous month that does fall on a Sunday.\n\n\
+  $calendarWeeks is a bit of holdover from the original,\n\
+  table-based layout of the calendar, but still useful: it\n\
+  determines how many weeks there are in the chosen month.  A\n\
+  series of for loops generates the appropriate <time> tags with\n\
+  datetime attributes, links, and visible dates inside each.\n\
+  (str_pad ensures that leading zeros are added where appropriate).\n\n\
+  That\xE2\x80\x99s it! Link destinations are left blank for you to complete.\n\n\
+  Now we have to call on the function to produce the calendar with\n\
+  appropriate month and year information, which will be another\n\
+  article."
+type: :task
+component: maceska
+release: 
+reporter: Matej Cepl <mcepl@redhat.com>
+status: :closed
+disposition: :wontfix
+creation_time: 2011-07-15 17:32:40.531264 Z
+references: []
+
+id: 290d90f875fc0e63c679a2f8c2fc9c22fed556cc
+log_events: 
+- - 2011-07-15 17:32:42.375158 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - created
+  - ""
+- - 2011-08-26 22:51:54.538745 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - closed with disposition wontfix
+  - Probably mostly included, but I don't want to control in detail.
+trac_id: 

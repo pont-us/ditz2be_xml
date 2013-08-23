@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Current day is not highlighted.
+desc: ""
+type: :bugfix
+component: maceska
+release: 
+reporter: Matej Cepl <mcepl@redhat.com>
+status: :unstarted
+disposition: 
+creation_time: 2011-07-14 22:27:06.667594 Z
+references: []
+
+id: 8750bd6d17127c1291dbafd4135e282f3f198850
+log_events: 
+- - 2011-07-14 22:27:07.303414 Z
+  - Matej Cepl <mcepl@redhat.com>
+  - created
+  - ""
