@@ -3,7 +3,7 @@
 # Redistribution and use in source and binary forms, with or
 # without modification, are permitted provided that the original
 # work is properly attributed to Matěj Cepl.
-# The name of Matěj Cepl may be used to endorse or promote
+# The name of Matěj Cepl may not be used to endorse or promote
 # products derived from this software without specific prior
 # written permission.
 # This software is provided by Matěj Cepl "AS IS" and without any
@@ -21,6 +21,15 @@ DITZ_DIR = ".ditz/"
 
 
 def _xml_indent(elem, level=0):
+    """Indent an XML element and its children.
+
+    The element is modified in-place.
+
+    Args:
+        elem: the element to indent
+        level: the current level of indentation
+
+    """
     i = "\n" + level * "  "
     if len(elem) != 0:
         if not (elem.text and elem.text.strip()):
@@ -35,6 +44,18 @@ def _xml_indent(elem, level=0):
 
 
 def make_comment(body, who, when):
+    """Construct a BE XML element representing a comment.
+
+    Args:
+        body: body text of the comment
+        who: name of the author of the comment
+        when: date of comment, in format
+              "Wed, 01 Jan 2014 12:00:00 +0000"
+
+    Returns:
+        an xml.etree.ElementTree.Element object representing
+        the supplied data
+    """
     out = et.Element("comment")
     et.SubElement(out, "author").text = who
     et.SubElement(out, "date").text = when
@@ -44,6 +65,12 @@ def make_comment(body, who, when):
 
 
 class Issue(yaml.YAMLObject):
+    """A YAML object representing a Ditz issue.
+
+    The object can be created and the fields populated automatically using
+    yaml.load.
+    """
+
     yaml_tag = "!ditz.rubyforge.org,2008-03-06/issue"
 
     def __init__(self, title, desc, type_val, component, release, reporter,
@@ -83,6 +110,8 @@ class Issue(yaml.YAMLObject):
             et.SubElement(self.bug, trg_elem).text = value
 
     def to_XML(self):
+        """Return a BE XML representation of this Issue.
+        """
         self.bug = et.Element("bug")
 
         self.__add_subelement("creation_time", "created",
@@ -114,6 +143,11 @@ class Issue(yaml.YAMLObject):
 
 
 class Project(yaml.YAMLObject):
+    """A YAML object representing a Ditz Project.
+
+    The object can be created and the fields populated automatically using
+    yaml.load.
+    """
     yaml_tag = "!ditz.rubyforge.org,2008-03-06/project"
 
     def __init__(self, name, version, components, releases):
@@ -127,6 +161,11 @@ class Project(yaml.YAMLObject):
 
 
 class Component(yaml.YAMLObject):
+    """A YAML object representing a Ditz Component.
+
+    The object can be created and the fields populated automatically using
+    yaml.load.
+    """
     yaml_tag = "!ditz.rubyforge.org,2008-03-06/component"
 
     def __init__(self, name):
@@ -134,15 +173,6 @@ class Component(yaml.YAMLObject):
 
 
 def main():
-    #out_xml = et.fromstring("""<be-xml>
-    #    <version>
-    #        <tag>bf52e18a</tag>
-    #        <committer>W. Trevor King</committer>
-    #        <date>2011-05-25</date>
-    #        <revision>bf52e18aad6e0e8effcadc6b90dfedf4d15b1859</revision>
-    #    </version>
-    #</be-xml>""")
-
     out_xml = et.fromstring("""<be-xml>
         <version>
         </version>
