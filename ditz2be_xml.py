@@ -8,6 +8,8 @@
 # written permission.
 # This software is provided by Matěj Cepl "AS IS" and without any
 # express or implied warranties.
+#
+# Further development by Pont Lurcock, 2014.
 
 import yaml
 from xml.etree import ElementTree as et
@@ -16,6 +18,7 @@ import glob
 import os.path
 import io
 import re
+import uuid
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
                     level=logging.DEBUG)
@@ -129,8 +132,24 @@ class Issue(yaml.YAMLObject):
             logging.debug("iss_attr = %s, value = %s", iss_attr, value)
             et.SubElement(self.bug, trg_elem).text = value
 
-    def to_XML(self):
+    def to_XML(self, targets):
         """Return a BE XML representation of this Issue.
+
+        A dictionary of the format
+        target_name -> (uuid, status, [bug_uuid-1, ...]) is
+        passed to this function. The target_name is equivalent to
+        Ditz's release name. If this issue has a release attribute,
+        the issue's UUID will be added to the list in its entry in the
+        dictionary, and an "extra-string" element will be added to
+        the XML record to record that this Issue blocks the
+        target.
+
+        Args:
+            targets: dictionary of target data
+
+        Return:
+            a BE XML element representing this Issue
+
         """
         self.bug = et.Element("bug")
 
@@ -144,11 +163,31 @@ class Issue(yaml.YAMLObject):
         # FIXME
         #self.__add_subelement("assignee", "assigned")
 
+        # BE will create UUIDs automatically if they are not present
+        # in the XML (or if the -p flag is not specified). However,
+        # we need the UUIDs to record relationships between bugs
+        # and BE targets (corresponding to Ditz releases), so we 
+        # create our own here.
+        bug_uuid = str(uuid.uuid4())
+        et.SubElement(self.bug, "uuid").text = bug_uuid
+
         if self.desc is not None:
             self.bug.append(make_comment(self.desc,
                                          self.reporter,
                                          self.__format_time(
                                              self.creation_time)))
+
+        if self.release is not None:
+            if self.release not in targets:
+                # There should already be an entry for the target
+                # taken from the Ditz project.yaml file, but in case
+                # this is missing for any reason we create it here
+                # and assume a status of "open".
+                target_uuid = str(uuid.uuid4())
+                targets[self.release] = (target_uuid, "open", [])
+            et.SubElement(self.bug, "extra-string").text = \
+                "BLOCKS:" + targets[self.release][0]
+            targets[self.release][2].append(bug_uuid)
 
         for date, reporter, action, comment in self.log_events:
             if comment is not None and comment != "":
@@ -200,6 +239,22 @@ class Component(yaml.YAMLObject):
     def __init__(self, name):
         self.name = name
 
+
+class Release(yaml.YAMLObject):
+    """A YAML object representing a Ditz Release.
+
+    The object can be created and the fields populated automatically using
+    yaml.load. The corresponding BE object is the "target".
+    """
+    yaml_tag = "!ditz.rubyforge.org,2008-03-06/release"
+
+    def __init__(self, name, status, release_time, log_events):
+        self.name = name
+        self.status = status
+        self.release_time = release_time
+        self.log_events = log_events
+
+
 def fix_ditz_yaml(ditz_string):
     """Correct problems with Ditz YAML.
 
@@ -234,11 +289,41 @@ def fix_ditz_yaml(ditz_string):
 
     return result
 
+def make_targets(targets, out_xml):
+    """Create XML representations for a dictionary of targets.
+
+    Args:
+        targets: a dictionary of the form
+            target_name -> (uuid, status, [bug_uuid-1, ...])
+        out_xml: an ElementTree to which the XML representations
+            will be appended
+    """
+
+    for t_name, (t_uuid, t_status, bug_uuids) in targets.items():
+        bug = et.Element("bug")
+        et.SubElement(bug, "uuid").text = t_uuid
+        et.SubElement(bug, "summary").text = t_name
+        et.SubElement(bug, "severity").text = "target"
+        et.SubElement(bug, "status").text = t_status
+        for bug_uuid in bug_uuids:
+            et.SubElement(bug, "extra-string").text = \
+                "BLOCKED-BY:" + bug_uuid
+        out_xml.append(bug)
+
+
 def main():
     out_xml = et.fromstring("""<be-xml>
         <version>
         </version>
     </be-xml>""")
+
+    # Read target names and statuses from Ditz project file
+    project = yaml.load(io.open(os.path.join(DITZ_DIR, "project.yaml")))
+    targets = {} # target_name -> (target_uuid, status, [bug_uuid_1, ...])
+    for r in project.releases:
+        status = {":unreleased" : "open",
+                  ":released"   : "fixed"}[r.status]
+        targets[r.name] = (str(uuid.uuid4()), status, [])
 
     issue_files = glob.glob(os.path.join(DITZ_DIR, "issue*.yaml"))
     logging.debug("issue_files = %s", issue_files)
@@ -248,8 +333,9 @@ def main():
             issue_io = io.FileIO(i_file)
             issue_str = issue_io.readall()
         issue = yaml.load(fix_ditz_yaml(issue_str))
-        out_xml.append(issue.to_XML())
+        out_xml.append(issue.to_XML(targets))
 
+    make_targets(targets, out_xml)
     _xml_indent(out_xml)
     print et.tostring(out_xml, "utf-8")
 
