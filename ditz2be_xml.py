@@ -70,6 +70,8 @@ def make_comment(body, who, when):
     et.SubElement(out, "author").text = who
     et.SubElement(out, "date").text = when
     et.SubElement(out, "content-type").text = "text/plain"
+    # BE import doesn't like empty comment bodies
+    if body=="": body = "(no content)"
     et.SubElement(out, "body").text = body
     return out
 
@@ -147,6 +149,14 @@ class Issue(yaml.YAMLObject):
                                          self.reporter,
                                          self.__format_time(
                                              self.creation_time)))
+
+        for date, reporter, action, comment in self.log_events:
+            if comment is not None and comment != "":
+                self.bug.append(make_comment(comment,
+                                             reporter,
+                                             self.__format_time(
+                                                 date)))
+
 
         #for comment in get_comments(cnf['git_user'], cnf['git_password'],
         #                            cnf['repo'], iss[u"number"]):
