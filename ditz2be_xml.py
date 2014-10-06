@@ -74,7 +74,8 @@ def make_comment(body, who, when):
     et.SubElement(out, "date").text = when
     et.SubElement(out, "content-type").text = "text/plain"
     # BE import doesn't like empty comment bodies
-    if body=="": body = "(no content)"
+    if body=="":
+        body = "(no content)"
     et.SubElement(out, "body").text = body
     return out
 
@@ -136,7 +137,7 @@ class Issue(yaml.YAMLObject):
         """Return a BE XML representation of this Issue.
 
         A dictionary of the format
-        target_name -> (uuid, status, [bug_uuid-1, ...]) is
+        target_name -> (uuid, status, [bug_uuid_1, ...]) is
         passed to this function. The target_name is equivalent to
         Ditz's release name. If this issue has a release attribute,
         the issue's UUID will be added to the list in its entry in the
@@ -279,7 +280,7 @@ def fix_ditz_yaml(ditz_string):
     # UTF-8 character itself (UTF-8 is YAML's default encoding anyway
     # so escapes are unnecessary). However, we can't just do a blanket
     # decode on the whole string since it would also replace \n escapes
-    # required for multiple paragraphs in text block (and possibly other
+    # required for multiple paragraphs in text blocks (and possibly other
     # things I haven't thought of). So we selectively decode the \x
     # escapes only.
     matches = re.findall(r"((\\x..)+)", result)
@@ -330,7 +331,6 @@ def main():
 
     for i_file in issue_files:
         with io.FileIO(i_file) as issue_io:
-            issue_io = io.FileIO(i_file)
             issue_str = issue_io.readall()
         issue = yaml.load(fix_ditz_yaml(issue_str))
         out_xml.append(issue.to_XML(targets))
